@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserNew(BaseModel):
+    """Sent by the client in requests to create a new user in the system"""
     username: str
     email: EmailStr
     name: str
@@ -21,6 +22,7 @@ class UserNew(BaseModel):
 
 
 class User(BaseModel):
+    """User objects returned to the client"""
     username: str
     email: EmailStr
     name: str
@@ -36,6 +38,7 @@ class User(BaseModel):
 
 
 class ItemNew(BaseModel):
+    """Sent by the client in requests to create a new item in the system"""
     name: str
     price: float
 
@@ -49,6 +52,7 @@ class ItemNew(BaseModel):
 
 
 class Item(BaseModel):
+    """Item objects returned to the client"""
     id: str
     name: str
     owner: str
