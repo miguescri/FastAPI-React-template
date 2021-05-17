@@ -10,6 +10,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 class Token(BaseModel):
+    """Object returned when authentication succeeds.
+
+    - access_token: contains a JWT token for HTTP header authentication
+    - token_type: usually "bearer"
+    """
     access_token: str
     token_type: str
 
@@ -20,26 +25,37 @@ oauth2_scheme: OAuth2PasswordBearer = OAuth2PasswordBearer(tokenUrl='token')
 
 
 def set_secret_key(key: str) -> None:
+    """Configure the secret key used for token encryption and decryption"""
     global secret_key
     secret_key = key
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify that the plain password results in the provided hash"""
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def make_password_hash(password: str) -> str:
+    """Generate a salted hash for the password"""
     return pwd_context.hash(password)
 
 
-def get_password_hash_for_username(username: str) -> (bool, str):  # (user_exists, pwd_hash)
+def get_password_hash_for_username(username: str) -> (bool, str):
+    """Retrieves the hashed password of a user in the system given its username
+
+    The function returns a tuple that contains:
+
+    - bool: true is the username represents a user in the system
+    - str: hashed password of the user, if it exists
+    """
     # TODO: implement here your database logic to retrieve the hash
     if username == 'user':
         return True, make_password_hash('password')
-    return False, None
+    return False, ''
 
 
 def authenticate_user(username: str, password: str) -> bool:
+    """Verify if there is a user in the system  with the given username:password combination"""
     user_exists: bool
     password_hash: str
     user_exists, password_hash = get_password_hash_for_username(username)
@@ -47,6 +63,7 @@ def authenticate_user(username: str, password: str) -> bool:
 
 
 def create_access_token(data: dict, expires_delta: timedelta) -> str:
+    """Generate a JWT token with the given data that expires after the given timedelta"""
     global secret_key
 
     to_encode: dict = data.copy()
@@ -57,6 +74,11 @@ def create_access_token(data: dict, expires_delta: timedelta) -> str:
 
 
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+    """Process a OAuth2 request for authentication and returns a JWT token if it is successful.
+    The request must contain at least the fields username and password.
+
+    If the provided information isn't valid, returns a 401 UNAUTHORIZED error.
+    """
     username: str = form_data.username
     password: str = form_data.password
     valid: bool = authenticate_user(username, password)
@@ -75,6 +97,10 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> 
 
 
 def get_current_username(token: str = Depends(oauth2_scheme)) -> str:
+    """Retrieve the username of the currently logged user.
+
+    The request must contain a valid JWT token in the header. Otherwise, it will return a 401 UNAUTHORIZED error.
+    """
     global secret_key
 
     credentials_exception = HTTPException(
