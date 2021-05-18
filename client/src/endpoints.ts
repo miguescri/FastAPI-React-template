@@ -53,3 +53,22 @@ export function signup(
             }
         })
 }
+
+export function signupAndLogin(
+    username: string,
+    email: string,
+    name: string,
+    password: string,
+    setToken: (arg0: string) => void,
+    onSignupError: () => void,
+    onLoginError: () => void,
+) {
+    signup(
+        username,
+        email,
+        name,
+        password,
+        () => login(username, password, setToken, onLoginError),
+        onSignupError
+    )
+}

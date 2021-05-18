@@ -1,8 +1,10 @@
 import React, {useState} from "react";
 import MyButton from "./common/MyButton";
-import {signup} from "../endpoints";
+import {signup, signupAndLogin} from "../endpoints";
 
-function Signup() {
+function Signup(prop: {
+    setToken: (arg0: string) => void,
+}) {
     const [username, setUsername] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     const [name, setName] = useState<string>("")
@@ -33,7 +35,9 @@ function Signup() {
         setSuccess(false)
     }
 
-    const buttonCallback = () => signup(username, email, name, password, onSuccess, onError)
+    const buttonCallbackSignup = () => signup(username, email, name, password, onSuccess, onError)
+    const buttonCallbackSignupAndLogin = () =>
+        signupAndLogin(username, email, name, password, prop.setToken, onError, onError)
 
     return (
         <div>
@@ -64,7 +68,11 @@ function Signup() {
             <br/>
             <MyButton
                 myLabel={"Sign up"}
-                callback={buttonCallback}
+                callback={buttonCallbackSignup}
+            />
+            <MyButton
+                myLabel={"Sign up and login"}
+                callback={buttonCallbackSignupAndLogin}
             />
             {errorMessage}
             {successMessage}

@@ -26,7 +26,7 @@ function AuthForm(prop: {
         case Menu.SIGNUP:
             menuTitle = <h1>Signup</h1>
             buttonSwitchMenu = <MyButton myLabel={"Switch to Login"} callback={() => setMenu(Menu.LOGIN)}/>
-            menuComponent = <Signup/>
+            menuComponent = <Signup setToken={prop.setToken}/>
             break
     }
 
