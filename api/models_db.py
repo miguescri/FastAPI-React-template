@@ -58,4 +58,4 @@ def get_user_from_db(username: str) -> (bool, ExampleDbUser):
         if user.username == username:
             return True, user
     else:
-        return False, ExampleDbUser()
+        return False, None
