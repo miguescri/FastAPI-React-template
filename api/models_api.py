@@ -16,7 +16,7 @@ class UserNew(BaseModel):
                 'username': 'cool_user',
                 'email': 'user@mail.com',
                 'name': 'User Userson Jr',
-                'password': 'secretpasword',
+                'password': 'secretpassword',
             }
         }
 

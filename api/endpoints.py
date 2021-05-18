@@ -4,12 +4,28 @@ from fastapi import Depends, HTTPException, status
 
 from auth import get_current_username, make_password_hash
 from models_api import UserNew, User, ItemNew, Item
+from models_db import get_user_from_db, add_user_to_db, ExampleDbUser
 
 
 def add_user(new_user: UserNew) -> User:
     """Add a user to the system for authentication"""
     password_hash: str = make_password_hash(new_user.password)
     # TODO: persist user with hashed_password in your database
+
+    db_user = ExampleDbUser(
+        username=new_user.username,
+        email=new_user.email,
+        name=new_user.name,
+        password_hash=password_hash,
+    )
+
+    success = add_user_to_db(db_user)
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Could not create the user',
+        )
 
     user = User(
         username=new_user.username,
@@ -24,11 +40,19 @@ def get_user(username: str = Depends(get_current_username)) -> User:
     """Retrieve info from the currently logged user. Requires authentication."""
     # TODO: retrieve user with username from database
 
+    found, db_user = get_user_from_db(username)
+    if not found:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'User not found with username "{username}"',
+        )
+
     user = User(
-        username=username,
-        email='user@mail.com',
-        name='User Userson Jr',
+        username=db_user.username,
+        email=db_user.email,
+        name=db_user.name,
     )
+
     return user
 
 

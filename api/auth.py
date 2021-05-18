@@ -5,6 +5,8 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
+from models_db import get_password_hash_for_username
+
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -38,20 +40,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def make_password_hash(password: str) -> str:
     """Generate a salted hash for the password"""
     return pwd_context.hash(password)
-
-
-def get_password_hash_for_username(username: str) -> (bool, str):
-    """Retrieves the hashed password of a user in the system given its username
-
-    The function returns a tuple that contains:
-
-    - bool: true is the username represents a user in the system
-    - str: hashed password of the user, if it exists
-    """
-    # TODO: implement here your database logic to retrieve the hash
-    if username == 'user':
-        return True, make_password_hash('password')
-    return False, ''
 
 
 def authenticate_user(username: str, password: str) -> bool:

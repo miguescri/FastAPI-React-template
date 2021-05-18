@@ -35,10 +35,16 @@ at `http://HOST:PORT/docs`.
 
 ## Adjust the template to your use case
 
-### Configure auth
+This repo works straight out of the box by mocking a persistance layer. In order to use it in your project, you need to
+add your own database and plug it with the existing code.
 
-Modify the contents of the `get_password_hash_for_username` function in `auth.py` to properly retrieve password hashes
-given a username. How to do this depends on your persistence layer, but it could look like this
+This persistence requieres **at least** a way to store users with a **username** and a **password hash**. This is used
+to validate clients and provide them with a valid signed JWT token.
+
+### Configure JWT auth
+
+Modify the contents of the `get_password_hash_for_username` function in `models_db.py` to properly retrieve password
+hashes given a username. How to do this depends on your persistence layer, but it could look like this
 with [SQLAlchemy](https://www.sqlalchemy.org/), for example:
 
 ```python
@@ -60,7 +66,58 @@ def get_password_hash_for_username(username: str) -> (bool, str):
 **IMPORTANT:** You also need to ensure that the password hashes that you store in your persistence layer are created
 using the `make_password_hash` function in `auth.py`, or configure the `pwd_context` object to match your hashing setup.
 
-## Add an endpoint
+### (Optional) Implement the user endpoints
+
+The template includes endpoints to create new users (POST /user) and to get the details of the currently 
+logged user (GET /user). In order for them to work, you need to implement the functions `add_user` and
+`get_user` from the file `endpoints.py`. Again, this may differ depending on your persistence layer, but 
+it could look like this:
+
+```python
+def add_user(new_user: UserNew) -> User:
+    """Add a user to the system for authentication"""
+    password_hash: str = make_password_hash(new_user.password)
+
+    db_user = ExampleDbUser(
+        username=new_user.username,
+        email=new_user.email,
+        name=new_user.name,
+        password_hash=password_hash,
+    )
+
+    success = add_user_to_db(db_user)
+
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='Could not create the user',
+        )
+
+    user = User(
+        username=new_user.username,
+        email=new_user.email,
+        name=new_user.name,
+    )
+
+    return user
+
+
+def get_user(username: str = Depends(get_current_username)) -> User:
+    """Retrieve info from the currently logged user. Requires authentication."""
+
+    found, db_user = get_user_from_db(username)
+    if not found:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'User not found with username "{username}"',
+        )
+
+    user = User(db_user)  # Transform from DB model to API model
+
+    return user
+```
+
+### Add a new endpoint
 
 First add the needed API models to `models_api.py` as [Pydantic](https://pydantic-docs.helpmanual.io/)
 classes. These are not persistence models, they are just used for receiving and returning data in the HTTP calls.
@@ -124,8 +181,8 @@ def get_items() -> List[Item]:
 ```
 
 Or if you need to ensure that the client is authenticated, or you need to know who they are, add a FastAPI dependency to
-the `get_current_username` function defined in `auth.py`. This way, your function will receive the username
-as a parameter if the authentication succeded, or the client will receive a 402 UNAUTHORIZED error:
+the `get_current_username` function defined in `auth.py`. This way, your function will receive the username as a
+parameter, if the authentication succeeded, or the client will receive a 402 UNAUTHORIZED error:
 
 ```python
 from fastapi import Depends
