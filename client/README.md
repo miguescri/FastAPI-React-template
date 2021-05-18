@@ -1,3 +1,13 @@
+# React client template
+
+This folder contains a basic [React](https://reactjs.org/) app that connects to the API server defined 
+in the other half of this repo. It implements a simple form to login or signup to the server via JWT tokens.
+
+Once authenticated, the token lives in the `token` [useState hook](https://reactjs.org/docs/hooks-reference.html#usestate) 
+in the `App` component, so it can be passed down to any other component that may want to call the server.
+
+
+---
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
