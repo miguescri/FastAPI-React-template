@@ -1,0 +1,1 @@
+docker run --rm -v "${PWD}:/local" -u $(id -u):$(id -g) openapitools/openapi-generator-cli generate -i /local/openapi.json -g typescript-fetch -o /local/client/src/openapi-client --additional-properties=typescriptThreePlus=true

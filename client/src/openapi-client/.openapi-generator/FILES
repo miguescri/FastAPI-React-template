@@ -1,0 +1,12 @@
+apis/DefaultApi.ts
+apis/index.ts
+index.ts
+models/HTTPValidationError.ts
+models/Item.ts
+models/ItemNew.ts
+models/Token.ts
+models/User.ts
+models/UserNew.ts
+models/ValidationError.ts
+models/index.ts
+runtime.ts
