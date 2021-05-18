@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import MyButton from "./components/common/MyButton";
+import AuthForm from "./components/AuthForm";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [token, setToken] = useState<String | null>(null)
+    let component
+
+    if (!token) {
+        component = <AuthForm setToken={setToken}/>
+    } else {
+        component = (
+            <div>
+                <header className="App-header">
+                    <MyButton
+                        myLabel={"Logout"}
+                        callback={() => setToken(null)}
+                    />
+                    <p>You are logged in</p>
+                </header>
+                <p>JWT token: <code>{token}</code></p>
+            </div>
+        )
+    }
+
+    return (
+        <div className="App">
+            {component}
+        </div>
+    );
 }
 
 export default App;
