@@ -180,7 +180,7 @@ def get_items() -> List[Item]:
     return items
 ```
 
-Or if you need to ensure that the client is authenticated, or you need to know who they are, add a FastAPI dependency to
+Or if you need to ensure that the client is authenticated, or you need to know who they are, add a [FastAPI dependency](https://fastapi.tiangolo.com/tutorial/dependencies/) to
 the `get_current_username` function defined in `auth.py`. This way, your function will receive the username as a
 parameter, if the authentication succeeded, or the client will receive a 402 UNAUTHORIZED error:
 
