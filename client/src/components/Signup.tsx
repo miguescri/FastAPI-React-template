@@ -1,10 +1,8 @@
 import React, {useState} from "react";
-import API from "../API";
 import MyButton from "./common/MyButton";
+import {signup} from "../endpoints";
 
-function Signup(prop: {
-    setToken: (arg0: string) => void,
-}) {
+function Signup() {
     const [username, setUsername] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     const [name, setName] = useState<string>("")
@@ -15,34 +13,27 @@ function Signup(prop: {
     let successMessage
 
     if (credentialsError) {
-        errorMessage = <p>Wrong credentials</p>
+        errorMessage = <p>Something went wrong</p>
     }
     if (success) {
         successMessage = <p>User created successfully. You can now login</p>
     }
 
-    const signup = () => {
-        let body = {username: username, email: email, password: password, name: name}
-
-        fetch(API + '/user',
-            {
-                method: 'POST',
-                mode: 'cors',
-                credentials: 'include',
-                body: JSON.stringify(body)
-            })
-            .then(response => {
-                if (response.ok) {
-                    setUsername('')
-                    setEmail('')
-                    setName('')
-                    setPassword('')
-                    setSuccess(true)
-                } else {
-                    setCredentialsError(true)
-                }
-            })
+    const onSuccess = () => {
+        setUsername('')
+        setEmail('')
+        setName('')
+        setPassword('')
+        setCredentialsError(false)
+        setSuccess(true)
     }
+
+    const onError = () => {
+        setCredentialsError(true)
+        setSuccess(false)
+    }
+
+    const buttonCallback = () => signup(username, email, name, password, onSuccess, onError)
 
     return (
         <div>
@@ -73,7 +64,7 @@ function Signup(prop: {
             <br/>
             <MyButton
                 myLabel={"Sign up"}
-                callback={() => signup()}
+                callback={buttonCallback}
             />
             {errorMessage}
             {successMessage}

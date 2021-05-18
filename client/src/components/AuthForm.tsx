@@ -3,7 +3,7 @@ import MyButton from "./common/MyButton";
 import Login from "./Login";
 import Signup from "./Signup";
 
-enum Menu{
+enum Menu {
     LOGIN,
     SIGNUP,
 }
@@ -17,16 +17,16 @@ function AuthForm(prop: {
     let buttonSwitchMenu
     let menuComponent
 
-    switch(menu){
+    switch (menu) {
         case Menu.LOGIN:
-            menuTitle=<h1>Login</h1>
-            buttonSwitchMenu = <MyButton myLabel={"Switch to Sign Up"} callback={()=>setMenu(Menu.SIGNUP)}/>
-            menuComponent=<Login setToken={prop.setToken}/>
+            menuTitle = <h1>Login</h1>
+            buttonSwitchMenu = <MyButton myLabel={"Switch to Sign Up"} callback={() => setMenu(Menu.SIGNUP)}/>
+            menuComponent = <Login setToken={prop.setToken}/>
             break
         case Menu.SIGNUP:
-            menuTitle=<h1>Signup</h1>
-            buttonSwitchMenu = <MyButton myLabel={"Switch to Login"} callback={()=>setMenu(Menu.LOGIN)}/>
-            menuComponent=<Signup setToken={prop.setToken}/>
+            menuTitle = <h1>Signup</h1>
+            buttonSwitchMenu = <MyButton myLabel={"Switch to Login"} callback={() => setMenu(Menu.LOGIN)}/>
+            menuComponent = <Signup/>
             break
     }
 
