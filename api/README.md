@@ -43,7 +43,7 @@ to validate clients and provide them with a valid signed JWT token.
 
 ### Configure JWT auth
 
-Modify the contents of the `get_password_hash_for_username` function in `models_db.py` to properly retrieve password
+Modify the contents of the `get_password_hash_for_username` function in `models.py` to properly retrieve password
 hashes given a username. How to do this depends on your persistence layer, but it could look like this
 with [SQLAlchemy](https://www.sqlalchemy.org/), for example:
 
@@ -119,7 +119,7 @@ def get_user(username: str = Depends(get_current_username)) -> User:
 
 ### Add a new endpoint
 
-First add the needed API models to `models_api.py` as [Pydantic](https://pydantic-docs.helpmanual.io/)
+First add the needed API models to `schemas.py` as [Pydantic](https://pydantic-docs.helpmanual.io/)
 classes. These are not persistence models, they are just used for receiving and returning data in the HTTP calls.
 However, it should be easy to connect the Pydantic classes with your persistence layer.
 
@@ -171,7 +171,7 @@ something like this:
 
 ```python
 from typing import List
-from models_api import Item
+from schemas import Item
 
 
 def get_items() -> List[Item]:
@@ -186,7 +186,7 @@ parameter, if the authentication succeeded, or the client will receive a 402 UNA
 
 ```python
 from fastapi import Depends
-from models_api import ItemNew, Item
+from schemas import ItemNew, Item
 from auth import get_current_username
 
 

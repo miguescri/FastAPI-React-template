@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from endpoints import add_user, get_user, get_items, get_item_by_id, add_item
-from models_api import User, Item
+from schemas import User, Item
 from settings import Settings
 from auth import set_secret_key, login_for_access_token, Token
 

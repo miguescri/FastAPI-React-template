@@ -3,8 +3,8 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 
 from auth import get_current_username, make_password_hash
-from models_api import UserNew, User, ItemNew, Item
-from models_db import get_user_from_db, add_user_to_db, ExampleDbUser
+from schemas import UserNew, User, ItemNew, Item
+from models import get_user_from_db, add_user_to_db, ExampleDbUser
 
 
 def add_user(new_user: UserNew) -> User:
